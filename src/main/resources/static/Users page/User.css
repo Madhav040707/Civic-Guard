@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #0d0d14;
+}
+
+/* ── Card shell ─────────────────────────────────── */
+#items {
+    width: 380px;
+    background: #13131f;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ── Cover banner ───────────────────────────────── */
+.cover {
+    height: 110px;
+    background: linear-gradient(135deg, #1a0533 0%, #2d1b6b 40%, #0e3a6e 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(127, 119, 221, 0.35) 0%, transparent 70%);
+}
+
+.cover-dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+
+/* ── Avatar row ─────────────────────────────────── */
+.avatar-area {
+    position: relative;
+    padding: 0 24px;
+    margin-top: -46px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.avatar-ring {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, #7f77dd, #378add);
+    position: relative;
+}
+
+.avatar-ring img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid #13131f;
+}
+
+#avatarBtn {
+    position: absolute;
+    bottom: 2px;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #7f77dd;
+    border: 2.5px solid #13131f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+#avatarBtn:hover {
+    background: #534ab7;
+    transform: scale(1.1);
+}
+
+#avatarBtn svg {
+    width: 13px;
+    height: 13px;
+    fill: #fff;
+}
+
+/* ── Edit pill button ───────────────────────────── */
+.mode-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 4px;
+    font-family: inherit;
+}
+
+.mode-pill:hover,
+.mode-pill.active {
+    background: rgba(127, 119, 221, 0.18);
+    border-color: #7f77dd;
+    color: #afa9ec;
+}
+
+.mode-pill svg {
+    width: 13px;
+    height: 13px;
+    fill: currentColor;
+}
+
+/* ── Card body ──────────────────────────────────── */
+.card-body {
+    padding: 0 24px 24px;
+}
+
+.name-row span {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+}
+
+.handle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.32);
+    margin-top: 3px;
+    margin-bottom: 18px;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-bottom: 18px;
+}
+
+/* ── Fields ─────────────────────────────────────── */
+#cred {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.field-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-icon {
+    position: absolute;
+    left: 12px;
+    width: 15px;
+    height: 15px;
+    fill: white;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.field input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: background 0.22s, border-color 0.22s, box-shadow 0.22s, color 0.22s;
+}
+
+.field input::placeholder {
+    color: rgba(255, 255, 255, 0.18);
+}
+
+.field input:disabled {
+    background: transparent;
+    border-color: transparent;
+    color: rgba(255, 255, 255, 0.52);
+    cursor: default;
+}
+
+.field input:not(:disabled):focus {
+    background: rgba(127, 119, 221, 0.08);
+    border-color: #7f77dd;
+    box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.12);
+}
+
+/* ── Action buttons ─────────────────────────────── */
+#viewBtns,
+#editBtns {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 11px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn.ghost {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn.accent {
+    background: linear-gradient(135deg, #7f77dd, #378add);
+    color: #fff;
+    border-color: transparent;
+}
+
+.btn.accent:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.btn.accent:active,
+.btn.ghost:active {
+    transform: scale(0.98);
+}
+
+/* ── Status message ─────────────────────────────── */
+#statusMsg {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    height: 16px;
+    margin-top: 12px;
+    color: #5dcaa5;
+    transition: opacity 0.3s;
+}
+
+#statusMsg.err {
+    color: #f09595;
+}

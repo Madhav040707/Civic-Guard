@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reports</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="MyReports.css">
+</head>
+
+<body>
+
+<div id="overlay" class="overlay"></div>
+
+<!-- Sidebar -->
+<aside id="d1">
+    <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-name">Civic Guard</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <button class="button" onclick="goToProfile()">Profile</button>
+        <button class="button" onclick="goToComplaints()">Complaints</button>
+        <button class="button active">My Reports</button>
+    </nav>
+
+    <button class="button logout-btn" onclick="logout()">Logout</button>
+</aside>
+
+<!-- Main -->
+<div class="main">
+
+    <header class="top-header">
+        <button id="menuToggle" class="menu-btn">☰</button>
+
+        <div class="welcome-block">
+            <h1 id="title">My Reports</h1>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-icon stat-icon-blue">📋</div>
+            <div>
+                <p class="stat-label">Total Reports</p>
+                <h3 class="stat-num" id="total">0</h3>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon stat-icon-orange">⏳</div>
+            <div>
+                <p class="stat-label">Pending</p>
+                <h3 class="stat-num" id="pending">0</h3>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon stat-icon-purple">🔄</div>
+            <div>
+                <p class="stat-label">In Progress</p>
+                <h3 class="stat-num" id="progress">0</h3>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon stat-icon-green">✔️</div>
+            <div>
+                <p class="stat-label">Resolved</p>
+                <h3 class="stat-num" id="resolved">0</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaints -->
+    <div class="complaints"></div>
+
+</div>
+
+<script src="MyReports.js"></script>
+</body>
+</html>

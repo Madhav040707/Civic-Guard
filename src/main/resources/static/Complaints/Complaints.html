@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Complaints – Civic Guard</title>
+  <link rel="stylesheet" href="Complaint.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">⚑ CivicGuard</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-label">Overview</div>
+    <a href="/main.html" class="nav-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Dashboard
+    </a>
+    <a href="Complaints.html" class="nav-item active">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      My Complaints
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar-row">
+      <div class="avatar">AD</div>
+      <div>
+        <div class="avatar-name">Admin</div>
+        <div style="font-size:11px; margin-top:1px;">admin@civicguard.in</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">All Complaints</div>
+    <div class="topbar-actions">
+      <div class="search-wrap">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Search complaints…" oninput="filterTable()"/>
+      </div>
+      <button class="btn btn-ghost" onclick="exportCSV()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card total">
+        <div class="stat-label">Total Complaints</div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-delta">All time records</div>
+      </div>
+      <div class="stat-card open">
+        <div class="stat-label">Open</div>
+        <div class="stat-value" id="statOpen">0</div>
+        <div class="stat-delta">Awaiting action</div>
+      </div>
+      <div class="stat-card progress">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value" id="statProgress">0</div>
+        <div class="stat-delta">Being handled</div>
+      </div>
+      <div class="stat-card resolved">
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value" id="statResolved">0</div>
+        <div class="stat-delta">Closed successfully</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <span class="filter-label">Status:</span>
+      <span class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">All</span>
+      <span class="filter-chip" data-filter="open" onclick="setFilter(this,'open')">Open</span>
+      <span class="filter-chip" data-filter="in-progress" onclick="setFilter(this,'in-progress')">In Progress</span>
+      <span class="filter-chip" data-filter="resolved" onclick="setFilter(this,'resolved')">Resolved</span>
+      <span class="filter-chip" data-filter="closed" onclick="setFilter(this,'closed')">Closed</span>
+      <select class="filter-select" id="categoryFilter" onchange="filterTable()">
+        <option value="">All Categories</option>
+        <option>Road & Infrastructure</option>
+        <option>Water Supply</option>
+        <option>Electricity</option>
+        <option>Sanitation</option>
+        <option>Public Safety</option>
+        <option>Noise Pollution</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table id="complaintsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Complaint</th>
+            <th>Reported By</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <p>No complaints found</p>
+      </div>
+      <div class="pagination">
+        <span class="page-info" id="pageInfo">Showing 1–10 of 0</span>
+        <div class="page-btns" id="pageBtns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="Complaint.js"></script>
+</body>
+</html>

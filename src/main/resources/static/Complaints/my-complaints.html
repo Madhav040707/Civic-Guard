@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Complaints – Civic Guard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161e;
+      --surface2: #1b1f2b;
+      --border: #252a38;
+      --accent: #f97316;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --danger: #ef4444;
+      --warning: #eab308;
+      --success: #22c55e;
+      --info: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* TOP NAV */
+    .topnav {
+      height: 62px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo-mark {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--accent);
+      letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-link {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.15s;
+      font-weight: 400;
+    }
+    .nav-link:hover { background: var(--surface2); color: var(--text); }
+    .nav-link.active {
+      background: rgba(249,115,22,0.1);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px 5px 6px;
+    }
+    .user-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #c2410c);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .user-name-nav { font-size: 13px; font-weight: 500; }
+
+    /* PAGE LAYOUT */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 32px;
+    }
+
+    /* Page header */
+    .page-header {
+      margin-bottom: 32px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .page-header-left h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .page-header-left h1 span { color: var(--accent); }
+    .page-header-left p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    .btn-new {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 20px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-new:hover { background: #ea6a0e; transform: translateY(-1px); }
+    .btn-new svg { width: 16px; height: 16px; }
+
+    /* Journey strip */
+    .journey {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .journey-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      position: relative;
+    }
+    .journey-step::after {
+      content: '→';
+      position: absolute;
+      right: -10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--border);
+      font-size: 18px;
+      z-index: 1;
+    }
+    .journey-step:last-child::after { display: none; }
+    .j-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .j-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .j-total .j-num { color: var(--info); }
+    .j-open .j-num  { color: var(--warning); }
+    .j-prog .j-num  { color: var(--accent); }
+    .j-done .j-num  { color: var(--success); }
+
+    /* Progress bar area */
+    .resolution-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .bar-label { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    .bar-pct {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--success);
+      white-space: nowrap;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-wrap svg {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px; color: var(--muted);
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      padding: 9px 12px 9px 32px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .filter-chip {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover, .filter-chip.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(249,115,22,0.08);
+    }
+
+    /* Complaint cards */
+    .cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .complaint-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+      animation: cardIn 0.3s ease both;
+      cursor: pointer;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .complaint-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 20px 14px;
+    }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-meta { flex: 1; }
+    .card-id-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .card-id {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .card-date { font-size: 11px; color: var(--muted); }
+    .card-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .card-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .badge::before {
+      content: ''; width: 5px; height: 5px;
+      border-radius: 50%;
+    }
+    .badge-open    { background: rgba(234,179,8,0.12); color: var(--warning); }
+    .badge-open::before { background: var(--warning); }
+    .badge-progress { background: rgba(249,115,22,0.12); color: var(--accent); }
+    .badge-progress::before { background: var(--accent); }
+    .badge-resolved { background: rgba(34,197,94,0.12); color: var(--success); }
+    .badge-resolved::before { background: var(--success); }
+    .badge-closed  { background: rgba(107,114,128,0.12); color: var(--muted); }
+    .badge-closed::before { background: var(--muted); }
+
+    /* Timeline strip inside card */
+    .card-timeline {
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .tl-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .tl-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 8px; left: 50%; right: -50%;
+      height: 2px;
+      z-index: 0;
+    }
+    .tl-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      z-index: 1;
+      position: relative;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tl-dot.done {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .tl-dot.done svg { width: 8px; height: 8px; }
+    .tl-dot.current {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.25);
+    }
+    .tl-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 5px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .tl-step.done .tl-label { color: var(--success); }
+    .tl-step.current .tl-label { color: var(--accent); font-weight: 600; }
+    .tl-connector {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      margin-bottom: 18px;
+    }
+    .tl-connector.done { background: var(--success); }
+
+    .cat-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      display: none;
+    }
+    .empty-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .empty-icon svg { width: 28px; height: 28px; color: var(--muted); }
+    .empty-state h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .empty-state p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<header class="topnav">
+  <div class="logo-mark">⚑ CivicGuard</div>
+  <nav class="nav-links">
+    <a href="main.html" class="nav-link">Home</a>
+    <a href="Complaints.html" class="nav-link">All Complaints</a>
+    <a href="my-complaints.html" class="nav-link active">My Complaints</a>
+  </nav>
+  <div class="user-pill">
+    <div class="user-avatar" id="navAvatar">RS</div>
+    <span class="user-name-nav" id="navUsername">Rahul Sharma</span>
+  </div>
+</header>
+
+<div class="page">
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>My <span>Complaints</span></h1>
+      <p>Track the status and progress of complaints you've submitted</p>
+    </div>
+    <a href="new-complaint.html" class="btn-new">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+      New Complaint
+    </a>
+  </div>
+
+  <!-- Journey stats -->
+  <div class="journey">
+    <div class="journey-step j-total">
+      <div class="j-num" id="jTotal">0</div>
+      <div class="j-label">Total Filed</div>
+    </div>
+    <div class="journey-step j-open">
+      <div class="j-num" id="jOpen">0</div>
+      <div class="j-label">Open</div>
+    </div>
+    <div class="journey-step j-prog">
+      <div class="j-num" id="jProg">0</div>
+      <div class="j-label">In Progress</div>
+    </div>
+    <div class="journey-step j-done">
+      <div class="j-num" id="jDone">0</div>
+      <div class="j-label">Resolved</div>
+    </div>
+  </div>
+
+  <!-- Resolution rate bar -->
+  <div class="resolution-bar">
+    <span class="bar-label">Your Resolution Rate</span>
+    <div class="bar-track">
+      <div class="bar-fill" id="resBar" style="width:0%"></div>
+    </div>
+    <span class="bar-pct" id="resPct">0%</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="search-wrap">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input class="search-input" type="text" id="searchInput" placeholder="Search your complaints…" oninput="renderCards()"/>
+    </div>
+    <span class="filter-chip active" data-filter="all" onclick="setFilter(this,'all')">All</span>
+    <span class="filter-chip" data-filter="open" onclick="setFilter(this,'open')">Open</span>
+    <span class="filter-chip" data-filter="in-progress" onclick="setFilter(this,'in-progress')">In Progress</span>
+    <span class="filter-chip" data-filter="resolved" onclick="setFilter(this,'resolved')">Resolved</span>
+    <span class="filter-chip" data-filter="closed" onclick="setFilter(this,'closed')">Closed</span>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" id="cardsGrid"></div>
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <h3>No complaints found</h3>
+    <p>Try a different filter or submit a new complaint.</p>
+    <a href="new-complaint.html" class="btn-new" style="display:inline-flex; margin:0 auto;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+      New Complaint
+    </a>
+  </div>
+</div>
+
+<script>
+  // ── Simulated: get logged-in user from session storage or default ──
+  // In your Spring Boot app, replace this with Thymeleaf: th:text="${user.name}"
+  const CURRENT_USER = sessionStorage.getItem('civicUser') || 'Rahul Sharma';
+  const CURRENT_INITIALS = CURRENT_USER.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+  document.getElementById('navAvatar').textContent = CURRENT_INITIALS;
+  document.getElementById('navUsername').textContent = CURRENT_USER;
+
+  // Category icons
+  const CAT_ICONS = {
+    'Road & Infrastructure': '🛣️',
+    'Water Supply': '💧',
+    'Electricity': '⚡',
+    'Sanitation': '🗑️',
+    'Public Safety': '🛡️',
+    'Noise Pollution': '🔊',
+  };
+
+  // ── All complaints data (filter by user) ──
+  // In your Spring Boot backend, fetch from: GET /api/complaints?userId={userId}
+  const ALL_COMPLAINTS = [
+    { id:'CG-1001', title:'Pothole on Main Road', desc:'Large pothole near Sector 4 junction causing accidents daily.', user:'Rahul Sharma', category:'Road & Infrastructure', priority:'high', status:'in-progress', date:'2025-04-10', statusHistory:['submitted','acknowledged','in-progress'] },
+    { id:'CG-1005', title:'Flooding near bus stop', desc:'Water logging every time it rains near Bus Stop No. 12.', user:'Rahul Sharma', category:'Road & Infrastructure', priority:'med', status:'open', date:'2025-04-13', statusHistory:['submitted','acknowledged'] },
+    { id:'CG-1009', title:'No streetlight near park', desc:'Three streetlights near Central Park are broken since March.', user:'Rahul Sharma', category:'Electricity', priority:'high', status:'resolved', date:'2025-03-28', statusHistory:['submitted','acknowledged','in-progress','resolved'] },
+    { id:'CG-1014', title:'Garbage bin overflowing', desc:'The public garbage bin on MG Road has not been cleared in 5 days.', user:'Rahul Sharma', category:'Sanitation', priority:'low', status:'closed', date:'2025-03-15', statusHistory:['submitted','acknowledged','in-progress','resolved','closed'] },
+    { id:'CG-1021', title:'Water supply disruption', desc:'No water supply for 2 days in Block C.', user:'Rahul Sharma', category:'Water Supply', priority:'high', status:'open', date:'2025-04-14', statusHistory:['submitted'] },
+    // Another user's complaint — will NOT show
+    { id:'CG-1003', title:'Streetlight not working', desc:'3 lights out', user:'Priya Singh', category:'Electricity', priority:'med', status:'resolved', date:'2025-04-08', statusHistory:['submitted','resolved'] },
+  ];
+
+  // Filter to current user's complaints only
+  const MY_COMPLAINTS = ALL_COMPLAINTS.filter(c => c.user === CURRENT_USER);
+
+  const TL_STEPS = ['submitted', 'acknowledged', 'in-progress', 'resolved', 'closed'];
+  const TL_LABELS = ['Submitted', 'Acknowledged', 'In Progress', 'Resolved', 'Closed'];
+
+  let currentFilter = 'all';
+
+  function renderStats() {
+    const total = MY_COMPLAINTS.length;
+    const open = MY_COMPLAINTS.filter(c => c.status === 'open').length;
+    const prog = MY_COMPLAINTS.filter(c => c.status === 'in-progress').length;
+    const done = MY_COMPLAINTS.filter(c => c.status === 'resolved' || c.status === 'closed').length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('jTotal').textContent = total;
+    document.getElementById('jOpen').textContent = open;
+    document.getElementById('jProg').textContent = prog;
+    document.getElementById('jDone').textContent = done;
+    document.getElementById('resPct').textContent = pct + '%';
+    setTimeout(() => {
+      document.getElementById('resBar').style.width = pct + '%';
+    }, 200);
+  }
+
+  function getFiltered() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    return MY_COMPLAINTS.filter(c => {
+      const matchStatus = currentFilter === 'all' || c.status === currentFilter;
+      const matchSearch = !search || c.title.toLowerCase().includes(search) || c.id.toLowerCase().includes(search) || c.category.toLowerCase().includes(search);
+      return matchStatus && matchSearch;
+    });
+  }
+
+  function timelineHtml(history, current) {
+    let html = '<div class="card-timeline">';
+    TL_STEPS.forEach((step, i) => {
+      const isDone = history.includes(step);
+      const isCurrent = current === step || (step === 'submitted' && isDone);
+      const isLast = i === TL_STEPS.length - 1;
+
+      html += `<div class="tl-step ${isDone ? (isCurrent && step === current ? 'current' : 'done') : ''}">
+        <div class="tl-dot ${isDone ? (step === current ? 'current' : 'done') : ''}">
+          ${isDone && step !== current ? '<svg viewBox="0 0 12 12" fill="white"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>' : ''}
+        </div>
+        <div class="tl-label">${TL_LABELS[i]}</div>
+      </div>`;
+      if (!isLast) {
+        html += `<div class="tl-connector ${isDone && history.includes(TL_STEPS[i+1]) ? 'done' : ''}"></div>`;
+      }
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function badgeHtml(status) {
+    const map = { 'open': 'badge-open', 'in-progress': 'badge-progress', 'resolved': 'badge-resolved', 'closed': 'badge-closed' };
+    const label = { 'open': 'Open', 'in-progress': 'In Progress', 'resolved': 'Resolved', 'closed': 'Closed' };
+    return `<span class="badge ${map[status] || ''}">${label[status] || status}</span>`;
+  }
+
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function renderCards() {
+    const filtered = getFiltered();
+    const grid = document.getElementById('cardsGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    const iconColors = {
+      'Road & Infrastructure': '#f97316',
+      'Water Supply': '#3b82f6',
+      'Electricity': '#eab308',
+      'Sanitation': '#22c55e',
+      'Public Safety': '#8b5cf6',
+      'Noise Pollution': '#ef4444',
+    };
+
+    grid.innerHTML = filtered.map((c, i) => {
+      const icon = CAT_ICONS[c.category] || '📋';
+      const color = iconColors[c.category] || '#6b7280';
+      return `
+        <div class="complaint-card" style="animation-delay:${i * 0.06}s" onclick="openDetail('${c.id}')">
+          <div class="card-top">
+            <div class="card-icon" style="background:${color}18">${icon}</div>
+            <div class="card-meta">
+              <div class="card-id-row">
+                <span class="card-id">${c.id}</span>
+                <span class="cat-badge">${c.category}</span>
+                <span class="card-date">${formatDate(c.date)}</span>
+              </div>
+              <div class="card-title">${c.title}</div>
+              <div class="card-desc">${c.desc}</div>
+            </div>
+            <div class="card-right">
+              ${badgeHtml(c.status)}
+              <button class="action-btn" onclick="event.stopPropagation(); openDetail('${c.id}')">Details →</button>
+            </div>
+          </div>
+          ${timelineHtml(c.statusHistory, c.status)}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function setFilter(el, filter) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentFilter = filter;
+    renderCards();
+  }
+
+  function openDetail(id) {
+    // In your Spring Boot app: navigate to /complaint/{id}
+    const c = MY_COMPLAINTS.find(x => x.id === id);
+    if (c) alert(`Complaint: ${c.id}\nTitle: ${c.title}\nStatus: ${c.status}\n\nIn your Spring Boot app, this navigates to /complaint/${id}`);
+  }
+
+  // Expose for Spring Boot Thymeleaf integration:
+  // Replace MY_COMPLAINTS with data from: th:each="complaint : ${userComplaints}"
+  // Or load dynamically: fetch('/api/complaints/my').then(r => r.json()).then(data => {...})
+
+  renderStats();
+  renderCards();
+</script>
+</body>
+</html>

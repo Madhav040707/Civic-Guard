@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register New User! </title>
+    <link rel="stylesheet" href="Register.css">
+</head>
+<body>
+<div class="main">
+
+    <div class="left">
+        <div class="container">
+            <h1>Welcome 🙏</h1>
+
+            <form onsubmit="event.preventDefault(); register();">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <h2>Register now</h2>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+
+    </div>
+<script src="Register.js"></script>
+</body>
+</html>
