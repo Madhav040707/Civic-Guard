@@ -8,8 +8,8 @@ function checkAuth() {
 window.onload = function () {
     checkAuth();
     loadUser();
-    fetchGlobalStats();   // ✅ ONLY THIS for stats
-    fetchComplaints();    // ✅ only for list
+    fetchGlobalStats();
+    fetchComplaints();
     fetchNotifications();
 };
 
