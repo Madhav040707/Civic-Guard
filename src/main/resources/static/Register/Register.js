@@ -14,7 +14,7 @@ async function register() {
 
     if (response.ok) {
         alert("Registration Successful ✅");
-        window.location.href = "index.html";
+        window.location.href = "/index.html";
     } else {
         alert(data.message);
     }
