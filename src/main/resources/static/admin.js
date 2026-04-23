@@ -236,3 +236,64 @@ function goToProfile() {
 function goToComplaints() {
     window.location.href = "/Complaints/Complaints.html";
 }
+
+async function submitComplaint() {
+    const description = document.getElementById("desc").value;
+    const category = document.getElementById("category").value;
+    const location = document.getElementById("selectedLocation").innerText;
+    const imageFile = document.getElementById("image").files[0];
+
+    if (!description || !category || location === "No location selected") {
+        alert("Please fill all fields ❌");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("location", location);
+
+    if (imageFile) {
+        formData.append("image", imageFile);
+    }
+
+    try {
+        const res = await fetch("http://localhost:8080/api/complaints", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to submit complaint");
+        }
+
+        alert("Complaint submitted successfully ✅");
+
+        closeForm();
+        fetchAllComplaints(); // refresh data
+
+    } catch (err) {
+        console.error(err);
+        alert("Error submitting complaint ❌");
+    }
+}
+function getMyLocation() {
+    if (!navigator.geolocation) {
+        alert("Geolocation not supported ❌");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        document.getElementById("selectedLocation").innerText =
+            `Lat: ${lat}, Lng: ${lon}`;
+    }, () => {
+        alert("Location access denied ❌");
+    });
+}
+
+document.getElementById("addBtn").onclick = function () {
+    document.getElementById("formModal").style.display = "flex";
+};
