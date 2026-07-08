@@ -8,8 +8,8 @@ function checkAuth() {
 window.onload = function () {
     checkAuth();
     loadUser();
-    fetchGlobalStats();   // ✅ ONLY THIS for stats
-    fetchComplaints();    // ✅ only for list
+    fetchGlobalStats();
+    fetchComplaints();
     fetchNotifications();
 };
 
@@ -18,11 +18,11 @@ async function loadUser() {
     if (!user || !user.email) return;
 
     try {
-        // fetch latest user from DB
+        //fetch latest user from DB
         const res = await fetch(`http://localhost:8080/api/user/${user.email}`);
         const data = await res.json();
 
-        // greeting
+        // good mornings wale msgs ladle
         const hour = new Date().getHours();
         let greeting = "Good Morning";
         if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
@@ -33,6 +33,7 @@ async function loadUser() {
             title.innerText = `${greeting}, ${data.name}! 👋`;
         }
 
+        // user ki image
         const img = document.getElementById("profileImg");
         if (img) {
             if (data.profileImage) {
@@ -51,7 +52,7 @@ async function loadUser() {
     }
 }
 
-// ================= FETCH COMPLAINTS =================
+        // fetching all Complaints
 function fetchComplaints() {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -209,7 +210,7 @@ function openImage(src, id) {
     if (modal && img) {
         modal.style.display = "flex";
         img.src = src;
-        currentComplaintId = id; // ✅ store id
+        currentComplaintId = id;
     }
 }
 
@@ -236,49 +237,6 @@ if (menuBtn && sidebar && overlay) {
 }
 
 // ================= NAVIGATION =================
-
-// ================= PROFILE IMAGE UPLOAD =================
-const profileImg = document.getElementById("profileImg");
-const uploadInput = document.getElementById("uploadProfile");
-
-if (profileImg && uploadInput) {
-
-    // click image → open file picker
-    profileImg.addEventListener("click", () => {
-        uploadInput.click();
-    });
-
-    // upload image
-    uploadInput.addEventListener("change", async function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const user = JSON.parse(localStorage.getItem("user"));
-
-        let formData = new FormData();
-        formData.append("image", file);
-        formData.append("userId", user.id);
-
-        try {
-            const res = await fetch("http://localhost:8080/api/user/uploadProfile", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await res.json();
-
-            profileImg.src = "http://localhost:8080" + data.profileImage;
-
-            localStorage.setItem("user", JSON.stringify(data));
-
-            alert("Profile image updated ✅");
-
-        } catch (err) {
-            console.error(err);
-            alert("Upload failed ❌");
-        }
-    });
-}
 
 function fetchNotifications() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -366,6 +324,6 @@ function updateStats(data) {
 function fetchGlobalStats() {
     fetch("http://localhost:8080/api/complaints")
         .then(res => res.json())
-        .then(data => updateStats(data)) // 🔥 reuse same function
+        .then(data => updateStats(data))
         .catch(err => console.error(err));
 }

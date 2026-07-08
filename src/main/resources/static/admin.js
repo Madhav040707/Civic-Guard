@@ -49,6 +49,7 @@ async function loadUser() {
             } else {
                 img.src = "logo.png";
             }
+            img.onclick = () => openImage(img.src);
         }
 
     } catch (err) {
@@ -172,7 +173,6 @@ function formatDate(dateString) {
 
 let currentComplaintId = null;
 
-// ✅ FIXED FUNCTION (WORKS FOR BOTH PROFILE + COMPLAINT)
 function openImage(src, id = null) {
     const modal = document.getElementById("imageModal");
     const img = document.getElementById("fullImage");
@@ -238,10 +238,28 @@ function goToComplaints() {
 }
 
 async function submitComplaint() {
+
+    let lastComplaintTime = localStorage.getItem("lastComplaintTime");
+
+    if (lastComplaintTime) {
+
+        const diff = Date.now() - parseInt(lastComplaintTime);
+
+        if (diff < 30000) {
+
+            const remaining = Math.ceil((30000 - diff) / 1000);
+
+            alert(`Please wait ${remaining} seconds before submitting another complaint ⏳`);
+
+            return;
+        }
+    }
     const description = document.getElementById("desc").value;
     const category = document.getElementById("category").value;
     const location = document.getElementById("selectedLocation").innerText;
     const imageFile = document.getElementById("image").files[0];
+
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!description || !category || location === "No location selected") {
         alert("Please fill all fields ❌");
@@ -249,6 +267,8 @@ async function submitComplaint() {
     }
 
     const formData = new FormData();
+
+    formData.append("userId", user.id);
     formData.append("description", description);
     formData.append("category", category);
     formData.append("location", location);
@@ -258,7 +278,8 @@ async function submitComplaint() {
     }
 
     try {
-        const res = await fetch("http://localhost:8080/api/complaints", {
+
+        const res = await fetch("http://localhost:8080/api/complaints/upload", {
             method: "POST",
             body: formData
         });
@@ -270,7 +291,8 @@ async function submitComplaint() {
         alert("Complaint submitted successfully ✅");
 
         closeForm();
-        fetchAllComplaints(); // refresh data
+
+        fetchAllComplaints();
 
     } catch (err) {
         console.error(err);
@@ -297,3 +319,11 @@ function getMyLocation() {
 document.getElementById("addBtn").onclick = function () {
     document.getElementById("formModal").style.display = "flex";
 };
+
+function closeForm() {
+    const modal = document.getElementById("formModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}

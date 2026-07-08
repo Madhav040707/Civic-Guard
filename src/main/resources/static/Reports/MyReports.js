@@ -98,7 +98,7 @@ function formatDate(dateString) {
     });
 }
 
-// ================= NAVIGATION =================
+
 function goToProfile() {
     window.location.href = "/Users%20page/User.html";
 }

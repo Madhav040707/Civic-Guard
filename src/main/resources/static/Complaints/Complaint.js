@@ -106,3 +106,15 @@ function getInitials(name) {
     if (!name) return "U";
     return name.split(" ").map(n => n[0]).join("").toUpperCase();
 }
+function goToDashboard() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        window.location.href = "/index.html";
+        return;
+    }
+    if (user.role === "ADMIN") {
+        window.location.href = "/admin.html";
+    } else {
+        window.location.href = "/main.html";
+    }
+}

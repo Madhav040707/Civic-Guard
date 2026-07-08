@@ -70,13 +70,14 @@ public class ComplaintController {
 
         String status = body.get("status");
 
-        // update complaint
+
+        // updating the complaint kyuki automate kara haiiiii
         c.setStatus(status);
         repo.save(c);
 
-        // 🔔 CREATE NOTIFICATION HERE
+//        for notifi...
         Notification n = new Notification();
-        n.setUserId(c.getUserId());  // 👈 VERY IMPORTANT
+        n.setUserId(c.getUserId());
         n.setStatus("UNREAD");
         n.setCreatedAt(new java.util.Date());
 

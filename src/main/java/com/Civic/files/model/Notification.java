@@ -7,10 +7,8 @@ import java.util.Date;
 
 @Document(collection = "notifications")
 public class Notification {
-
     @Id
     private String id;
-
     private String userId;
     private String message;
     private String status;
