@@ -1,6 +1,6 @@
 async function loadComplaints() {
     try {
-        const res = await fetch("http://localhost:8080/api/complaints");
+        const res = await fetch(`${BASE_URL}/api/complaints`);
         const data = await res.json();
 
         console.log("Complaints:", data);

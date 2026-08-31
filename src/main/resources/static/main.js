@@ -15,40 +15,54 @@ window.onload = function () {
 
 async function loadUser() {
     const user = JSON.parse(localStorage.getItem("user"));
+
     if (!user || !user.email) return;
 
     try {
-        //fetch latest user from DB
-        const res = await fetch(`http://localhost:8080/api/user/${user.email}`);
+        // Fetch latest user from DB
+        const res = await fetch(`${BASE_URL}/api/user/${user.email}`);
+
+        if (!res.ok) {
+            throw new Error(`Failed to load user: ${res.status}`);
+        }
+
         const data = await res.json();
 
-        // good mornings wale msgs ladle
         const hour = new Date().getHours();
+
         let greeting = "Good Morning";
-        if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
-        else if (hour >= 17) greeting = "Good Evening";
+
+        if (hour >= 12 && hour < 17) {
+            greeting = "Good Afternoon";
+        } else if (hour >= 17) {
+            greeting = "Good Evening";
+        }
 
         const title = document.getElementById("d2");
+
         if (title) {
             title.innerText = `${greeting}, ${data.name}! 👋`;
         }
 
-        // user ki image
+        // User profile image
         const img = document.getElementById("profileImg");
+
         if (img) {
+
             if (data.profileImage) {
-                img.src = "http://localhost:8080" + data.profileImage;
+                img.src = BASE_URL + data.profileImage;
             } else {
                 img.src = "logo.png";
             }
+
             img.onclick = () => openImage(img.src);
         }
 
-        // update localStorage
+        // Update localStorage with latest user data
         localStorage.setItem("user", JSON.stringify(data));
 
     } catch (err) {
-        console.error(err);
+        console.error("Error loading user:", err);
     }
 }
 
@@ -56,7 +70,7 @@ async function loadUser() {
 function fetchComplaints() {
     const user = JSON.parse(localStorage.getItem("user"));
 
-    fetch(`http://localhost:8080/api/complaints/user/${user.id}`)
+    fetch(`${BASE_URL}/api/complaints/user/${user.id}`)
         .then(res => res.json())
         .then(data => {
             showComplaints(data); // ✅ ONLY show list
@@ -74,39 +88,58 @@ function showComplaints(data) {
 
     container.innerHTML = "";
 
-    data.forEach(c => {
+    data.forEach((c, index) => {
         const card = document.createElement("div");
         card.className = "complaint-card";
 
+        // Serial number
+        const serial = document.createElement("div");
+        serial.className = "serial-number";
+        serial.innerText = `#${index + 1}`;
+
+        card.appendChild(serial);
+
         if (c.imagePath) {
             const img = document.createElement("img");
-            img.src = "http://localhost:8080" + c.imagePath;
+            img.src = BASE_URL + c.imagePath;
             img.className = "complaint-img";
-            img.onclick = () => openImage(img.src, c.id);
             card.appendChild(img);
         }
 
         const body = document.createElement("div");
         body.className = "card-body";
 
+        const statusClass =
+            c.status === "PENDING"
+                ? "status-pending"
+                : c.status === "IN_PROGRESS"
+                    ? "status-progress"
+                    : "status-resolved";
+
+        const statusBadge = document.createElement("div");
+        statusBadge.className = `status-badge ${statusClass}`;
+        statusBadge.innerText = c.status || "UNKNOWN";
+
         const title = document.createElement("div");
         title.className = "complaint-title";
         title.innerText = c.category || "No Category";
-        body.appendChild(title);
 
-        const loc = document.createElement("div");
-        loc.className = "location";
-        loc.innerHTML = `📍 ${c.location || "Unknown"}`;
-        body.appendChild(loc);
+        const location = document.createElement("div");
+        location.className = "location";
+        location.innerText = `📍 ${c.location || "Unknown"}`;
 
-        const desc = document.createElement("div");
-        desc.className = "description";
-        desc.innerText = c.description || "No Description";
-        body.appendChild(desc);
+        const description = document.createElement("div");
+        description.className = "description";
+        description.innerText = c.description || "No Description";
 
         const date = document.createElement("div");
         date.className = "complaint-date";
         date.innerText = formatDate(c.createdAt);
+
+        body.appendChild(statusBadge);
+        body.appendChild(title);
+        body.appendChild(location);
+        body.appendChild(description);
         body.appendChild(date);
 
         card.appendChild(body);
@@ -171,36 +204,56 @@ function getMyLocation() {
 }
 
 function submitComplaint() {
-    if (!selectedAddress) return alert("Please select location ❗");
+    if (!selectedAddress) {
+        return alert("Please select location ❗");
+    }
 
     const file = document.getElementById("image").files[0];
-    if (!file) return alert("Please select an image ❗");
 
-    let formData = new FormData();
+    if (!file) {
+        return alert("Please select an image ❗");
+    }
+
     const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.id) {
+        return alert("User not found. Please login again ❌");
+    }
+
+    const formData = new FormData();
+
     formData.append("userId", user.id);
     formData.append("description", document.getElementById("desc").value);
     formData.append("category", document.getElementById("category").value);
     formData.append("location", selectedAddress);
     formData.append("image", file);
 
-    fetch("http://localhost:8080/api/complaints/upload", {
+    fetch(`${BASE_URL}/api/complaints/upload`, {
         method: "POST",
         body: formData
     })
-        .then(res => res.json())
+        .then(async res => {
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Upload failed: ${res.status} ${text}`);
+            }
+
+            return res.text();
+        })
         .then(() => {
             alert("Complaint Submitted ✅");
             closeForm();
             fetchComplaints();
         })
         .catch(err => {
-            console.error(err);
+            console.error("Error submitting complaint:", err);
             alert("Error submitting complaint ❌");
         });
 }
 
+
 // ================= IMAGE MODAL =================
+
 let currentComplaintId = null;
 
 function openImage(src, id) {
@@ -216,15 +269,21 @@ function openImage(src, id) {
 
 function closeImage() {
     const modal = document.getElementById("imageModal");
-    if (modal) modal.style.display = "none";
+
+    if (modal) {
+        modal.style.display = "none";
+    }
 }
 
+
 // ================= SIDEBAR =================
+
 const menuBtn = document.getElementById("menuToggle");
 const sidebar = document.getElementById("d1");
 const overlay = document.getElementById("overlay");
 
 if (menuBtn && sidebar && overlay) {
+
     menuBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
         overlay.classList.toggle("active");
@@ -236,61 +295,95 @@ if (menuBtn && sidebar && overlay) {
     });
 }
 
-// ================= NAVIGATION =================
+
+// ================= NOTIFICATIONS =================
 
 function fetchNotifications() {
+
     const user = JSON.parse(localStorage.getItem("user"));
 
-    fetch(`http://localhost:8080/api/notifications/${user.id}`)
+    if (!user || !user.id) {
+        return;
+    }
+
+    fetch(`${BASE_URL}/api/notifications/${user.id}`)
         .then(res => res.json())
         .then(data => showNotifications(data))
         .catch(err => console.error(err));
 }
+
+
 function showNotifications(data) {
+
     const bell = document.querySelector(".notification-bell");
 
-    let old = document.querySelector(".notif-dropdown");
-    if (old) old.remove();
+    if (!bell) {
+        return;
+    }
 
-    let box = document.createElement("div");
+    const old = document.querySelector(".notif-dropdown");
+
+    if (old) {
+        old.remove();
+    }
+
+    const box = document.createElement("div");
     box.className = "notif-dropdown";
 
     if (data.length === 0) {
+
         box.innerHTML = "<p style='padding:10px'>No notifications</p>";
+
     } else {
+
         data.forEach(n => {
-            let item = document.createElement("div");
+
+            const item = document.createElement("div");
+
             item.className = "notif-item";
             item.innerText = n.message;
+
             box.appendChild(item);
         });
     }
 
     bell.appendChild(box);
 
-    // 🔴 red dot logic
-    let unread = data.some(n => n.status === "UNREAD");
-    let dot = document.querySelector(".notif-dot");
+    // 🔴 Red dot logic
+
+    const unread = data.some(n => n.status === "UNREAD");
+
+    const dot = document.querySelector(".notif-dot");
+
     if (dot) {
         dot.style.display = unread ? "block" : "none";
     }
 
-    // ⏱️ AUTO CLOSE AFTER 5 SECONDS
+    // ⏱️ Auto close after 5 seconds
+
     setTimeout(() => {
+
         if (box) {
             box.remove();
         }
+
     }, 5000);
 }
 
+
 const bell = document.querySelector(".notification-bell");
+
 if (bell) {
     bell.addEventListener("click", fetchNotifications);
 }
 
-function goTOMyReports(){
-    window.location.href="/Reports/MyReports.html";
+
+// ================= NAVIGATION =================
+
+function goTOMyReports() {
+    window.location.href = "/Reports/MyReports.html";
 }
+
 function goToProfile() {
     window.location.href = "/Users%20page/User.html";
 }
@@ -299,19 +392,34 @@ function goToComplaints() {
     window.location.href = "/Complaints/Complaints.html";
 }
 
+
+// ================= LOGOUT =================
+
 function logout() {
     localStorage.clear();
     window.location.replace("/");
 }
+
+
+// ================= STATS =================
+
 function updateStats(data) {
+
     let pending = 0;
     let progress = 0;
     let resolved = 0;
 
     data.forEach(c => {
-        if (c.status === "PENDING") pending++;
-        else if (c.status === "IN_PROGRESS") progress++;
-        else if (c.status === "RESOLVED") resolved++;
+
+        if (c.status === "PENDING") {
+            pending++;
+        }
+        else if (c.status === "IN_PROGRESS") {
+            progress++;
+        }
+        else if (c.status === "RESOLVED") {
+            resolved++;
+        }
     });
 
     document.getElementById("p1").innerText = data.length;
@@ -321,8 +429,10 @@ function updateStats(data) {
     document.querySelector("#s4 .stat-num").innerText = resolved;
 }
 
+
 function fetchGlobalStats() {
-    fetch("http://localhost:8080/api/complaints")
+
+    fetch(`${BASE_URL}/api/complaints`)
         .then(res => res.json())
         .then(data => updateStats(data))
         .catch(err => console.error(err));

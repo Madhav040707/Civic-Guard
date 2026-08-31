@@ -19,7 +19,7 @@ async function loadUser() {
     if (!user || !user.email) return;
 
     try {
-        const res = await fetch(`http://localhost:8080/api/user/${user.email}`);
+        const res = await fetch(`${BASE_URL}/api/user/${user.email}`);
 
         if (!res.ok) {
             throw new Error("Failed to fetch user");
@@ -45,7 +45,7 @@ async function loadUser() {
         const img = document.getElementById("profileImg");
         if (img) {
             if (data.profileImage) {
-                img.src = "http://localhost:8080" + data.profileImage;
+                img.src = BASE_URL + data.profileImage;
             } else {
                 img.src = "logo.png";
             }
@@ -58,7 +58,7 @@ async function loadUser() {
 }
 
 function fetchAllComplaints() {
-    fetch("http://localhost:8080/api/complaints")
+    fetch(`${BASE_URL}/api/complaints`)
         .then(res => res.json())
         .then(data => {
             console.log("ADMIN DATA:", data);
@@ -87,7 +87,7 @@ function showComplaints(data) {
 
         if (c.imagePath) {
             const img = document.createElement("img");
-            img.src = "http://localhost:8080" + c.imagePath;
+            img.src =BASE_URL+ c.imagePath;
             img.className = "complaint-img";
 
             // ✅ KEEP THIS (for complaints)
@@ -193,7 +193,7 @@ function closeImage() {
 }
 
 function updateStatus(id, status) {
-    fetch(`http://localhost:8080/api/complaints/${id}/status`, {
+    fetch(`${BASE_URL}/api/complaints/${id}/status`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -279,7 +279,7 @@ async function submitComplaint() {
 
     try {
 
-        const res = await fetch("http://localhost:8080/api/complaints/upload", {
+        const res = await fetch(`${BASE_URL}/api/complaints/upload`, {
             method: "POST",
             body: formData
         });

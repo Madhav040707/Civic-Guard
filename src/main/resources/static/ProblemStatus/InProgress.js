@@ -1,4 +1,4 @@
-fetch("http://localhost:8080/api/complaints")
+fetch(`${BASE_URL}/api/complaints`)
     .then(res => res.json())
     .then(data => {
         const filtered = data.filter(c => c.status === "IN_PROGRESS");
@@ -20,7 +20,7 @@ function showComplaints(data) {
         
         if (c.imagePath) {
             const img = document.createElement("img");
-            img.src = "http://localhost:8080" + c.imagePath;
+            img.src = BASE_URL + c.imagePath;
             img.className = "complaint-img";
             card.appendChild(img);
         }
